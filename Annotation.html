@@ -1,0 +1,42 @@
+<html>
+<head>
+ <script src="https://unpkg.com/markerjs2/markerjs2.js"></script>
+ <script>
+
+ 	function xx(a)
+	{
+
+// create an instance of MarkerArea and pass the target image reference as a parameter
+let markerArea = new markerjs2.MarkerArea(a);
+let maState={};
+
+// register an event listener for when user clicks OK/save in the marker.js UI
+markerArea.addRenderEventListener((dataUrl,state) => {
+if(state){fetch('http://localhost:5000/application/json', {
+  method: 'POST',
+  body: JSON.stringify(state),
+  headers: {'Content-type': 'application/json; charset=UTF-8'}
+})
+    .then(response =>  response.text())
+	.then (data => document.getElementById("ta1").value=data);}
+  // we are setting the markup result to replace our original image on the page
+  // but you can set a different image or upload it to your server
+  document.getElementById('myimg').src = dataUrl;
+  maState = state;
+})
+markerArea.show();
+//if(maState!=null)
+if(Object.keys(maState).length !== 0)
+{
+markerArea.restoreState(maState);
+}}
+</script>
+</head>
+<body>
+<div id="myimg"><img  style="max-width: 600px;" src='http://localhost:5000/Gain0032.jpg' onclick='xx(this);'></img></div>
+
+<TEXTAREA id="ta1"  multiline="true"/> 
+
+<input type="button" value="OK" onclick='xx(document.getElementById("myimg"));'/>
+</body>
+</html>
